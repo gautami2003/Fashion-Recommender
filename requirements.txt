@@ -8,4 +8,3 @@ opencv-python
 Pillow
 pyngrok
 streamlit
-localtunnel
