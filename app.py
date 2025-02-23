@@ -49,25 +49,23 @@ if model is None:
 neighbors = NearestNeighbors(n_neighbors=min(6, len(Image_features)), algorithm='brute', metric='euclidean')
 neighbors.fit(Image_features)
 
-# Feature Extraction Function
-def extract_features_from_images(image_path, model):
-    try:
-        img = image.load_img(image_path, target_size=(224, 224))
-        img_array = image.img_to_array(img)
-        img_expand_dim = np.expand_dims(img_array, axis=0)
-        img_preprocess = preprocess_input(img_expand_dim)
-        result = model.predict(img_preprocess).flatten()
-        normalized_result = result / norm(result)
+# Ensure you have the correct feature extraction function
+def generate_image_features(image_dir):
+    model = ResNet50(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+    model.trainable = False
+    features = []
 
-        # Debug output to check shapes
-        st.write(f"Extracted features shape: {normalized_result.shape}")
-        if len(Image_features) > 0:
-            st.write(f"Example feature shape from Image_features: {Image_features[0].shape}")
+    for filename in os.listdir(image_dir):
+        if filename.endswith((".jpg", ".png", ".jpeg")):
+            img_path = os.path.join(image_dir, filename)
+            img = image.load_img(img_path, target_size=(224, 224))
+            img_array = image.img_to_array(img)
+            img_expand_dim = np.expand_dims(img_array, axis=0)
+            img_preprocess = preprocess_input(img_expand_dim)
+            feature = model.predict(img_preprocess).flatten()
+            features.append(feature / norm(feature))  # Normalize features
 
-        return normalized_result
-    except Exception as e:
-        st.error(f"Error processing image: {e}")
-        return None
+    return np.array(features)
 
 
 # File Upload Handler
