@@ -91,13 +91,17 @@ if upload_file is not None:
             cols = st.columns(num_recommendations)
             
             for i in range(num_recommendations):
-                file_path = filenames[indices[0][i + 1]]
-
-                # Check if the recommended image exists
-                if os.path.exists(file_path):
-                    cols[i].image(file_path, width=150)
+                recommended_index = indices[0][i + 1]  # Skip the first index as it is the input image
+                # Ensure recommended_index is within bounds
+                if recommended_index < len(filenames):
+                    file_path = filenames[recommended_index]
+                    # Check if the recommended image exists
+                    if os.path.exists(file_path):
+                        cols[i].image(file_path, width=150)
+                    else:
+                        st.warning(f"Missing image: {file_path}")
                 else:
-                    st.warning(f"Missing image: {file_path}")
+                    st.warning(f"Index {recommended_index} is out of bounds for filenames list.")
         else:
             st.warning("No similar images found. Try uploading another image.")
 
