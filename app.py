@@ -58,15 +58,17 @@ def extract_features_from_images(image_path, model):
         img_preprocess = preprocess_input(img_expand_dim)
         result = model.predict(img_preprocess).flatten()
         normalized_result = result / norm(result)
-        
+
         # Debug output to check shapes
         st.write(f"Extracted features shape: {normalized_result.shape}")
-        st.write(f"Expected feature shape: {Image_features[0].shape}")
+        if len(Image_features) > 0:
+            st.write(f"Example feature shape from Image_features: {Image_features[0].shape}")
 
         return normalized_result
     except Exception as e:
         st.error(f"Error processing image: {e}")
         return None
+
 
 # File Upload Handler
 upload_file = st.file_uploader("Upload an image", type=["jpg", "png", "jpeg"])
