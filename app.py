@@ -57,7 +57,13 @@ def extract_features_from_images(image_path, model):
         img_expand_dim = np.expand_dims(img_array, axis=0)
         img_preprocess = preprocess_input(img_expand_dim)
         result = model.predict(img_preprocess).flatten()
-        return result / norm(result)
+        normalized_result = result / norm(result)
+        
+        # Debug output to check shapes
+        st.write(f"Extracted features shape: {normalized_result.shape}")
+        st.write(f"Expected feature shape: {Image_features[0].shape}")
+
+        return normalized_result
     except Exception as e:
         st.error(f"Error processing image: {e}")
         return None
