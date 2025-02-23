@@ -14,11 +14,10 @@ from PIL import Image
 st.title("Fashion Recommendation System")
 st.write("Upload an image to get similar fashion recommendations.")
 
-# Google Drive File Paths
+# Load Features & Filenames Safely
 features_path = "Image_features_embedding.pkl"
 filenames_path = "filenames.pkl"
 
-# Load Features & Filenames Safely
 try:
     with open(features_path, 'rb') as f:
         Image_features = pkl.load(f)
@@ -27,6 +26,9 @@ try:
 except Exception as e:
     st.error(f"Error loading data files: {e}")
     st.stop()
+
+# Ensure filenames are valid
+filenames = [f for f in filenames if os.path.exists(f)]
 
 # Cache Model to Prevent Redownloading
 @st.cache_resource
@@ -84,7 +86,13 @@ if upload_file is not None:
         cols = st.columns(5)
         
         for i, col in enumerate(cols):
-            col.image(filenames[indices[0][i + 1]], width=150)
-    
+            file_path = filenames[indices[0][i + 1]]
+
+            # Check if the recommended image exists
+            if os.path.exists(file_path):
+                col.image(file_path, width=150)
+            else:
+                st.warning(f"Missing image: {file_path}")
+
     # Cleanup: Remove Temporary File
     os.remove(image_path)
