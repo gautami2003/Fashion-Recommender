@@ -46,7 +46,7 @@ if model is None:
     st.stop()
 
 # Train Nearest Neighbors Model
-neighbors = NearestNeighbors(n_neighbors=6, algorithm='brute', metric='euclidean')
+neighbors = NearestNeighbors(n_neighbors=min(6, len(Image_features)), algorithm='brute', metric='euclidean')
 neighbors.fit(Image_features)
 
 # Feature Extraction Function
@@ -79,20 +79,27 @@ if upload_file is not None:
 
     # Extract Features & Find Recommendations
     input_img_features = extract_features_from_images(image_path, model)
+    
     if input_img_features is not None:
         distances, indices = neighbors.kneighbors([input_img_features])
         
-        st.subheader("Recommended Images")
-        cols = st.columns(5)
+        # Ensure we do not exceed available images
+        num_recommendations = min(5, len(indices[0]) - 1)
         
-        for i, col in enumerate(cols):
-            file_path = filenames[indices[0][i + 1]]
+        if num_recommendations > 0:
+            st.subheader("Recommended Images")
+            cols = st.columns(num_recommendations)
+            
+            for i in range(num_recommendations):
+                file_path = filenames[indices[0][i + 1]]
 
-            # Check if the recommended image exists
-            if os.path.exists(file_path):
-                col.image(file_path, width=150)
-            else:
-                st.warning(f"Missing image: {file_path}")
+                # Check if the recommended image exists
+                if os.path.exists(file_path):
+                    cols[i].image(file_path, width=150)
+                else:
+                    st.warning(f"Missing image: {file_path}")
+        else:
+            st.warning("No similar images found. Try uploading another image.")
 
     # Cleanup: Remove Temporary File
     os.remove(image_path)
