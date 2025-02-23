@@ -15,8 +15,8 @@ st.title("Fashion Recommendation System")
 st.write("Upload an image to get similar fashion recommendations.")
 
 # Google Drive File Paths
-features_path = "/content/drive/MyDrive/SEM 4/Deep Learning/Fashion_Recom_Model_Recent_Working_ON/Image_features_embedding.pkl"
-filenames_path = "/content/drive/MyDrive/SEM 4/Deep Learning/Fashion_Recom_Model_Recent_Working_ON/filenames.pkl"
+features_path = "Image_features_embedding.pkl"
+filenames_path = "filenames.pkl"
 
 # Load Features & Filenames Safely
 try:
