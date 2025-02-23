@@ -15,7 +15,7 @@ st.title("Fashion Recommendation System")
 st.write("Upload an image to get similar fashion recommendations.")
 
 # Load Features & Filenames Safely
-features_path = "Image_features_embedding.pkl"
+features_path = "Images_features.pkl"
 filenames_path = "filenames.pkl"
 
 try:
